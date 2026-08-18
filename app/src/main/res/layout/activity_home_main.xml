@@ -7,15 +7,16 @@
     android:id="@+id/main"
     android:background="#EEEEEE">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/home"
+        android:background="#F5F5F5"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        android:gravity="center_horizontal">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="40dp">
+            android:layout_height="300dp"
+            android:background="@drawable/header_background">
 
             <TextView
                 android:id="@+id/textView"
@@ -23,90 +24,94 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="Vườn Cây Công Toàn"
+                android:text="Hệ Thống Tưới Cây\nCông Toàn"
                 android:textColor="#FFFFFF"
-                android:textSize="50sp" />
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:shadowColor="#44000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="5"/>
         </RelativeLayout>
-        <GridLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:layout_marginTop="10dp"
-            android:columnCount="3"
-            android:rowCount="3"
-            android:padding="25dp"
-            >
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:gravity="center">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:layout_row="0"
-                android:layout_rowWeight="1"
-                android:layout_column="0"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill"
-                app:cardCornerRadius="8dp"
+                android:id="@+id/btn_garden"
+                android:layout_width="0dp"
+                android:layout_height="180dp"
+                android:layout_weight="1"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="25dp"
                 app:cardElevation="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:cardUseCompatPadding="true"
-                android:id="@+id/btn_garden">
+                android:foreground="?attr/selectableItemBackground">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="#F9FBE7">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:src="@drawable/garden" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Vườn" />
+                        android:layout_marginTop="12dp"
+                        android:text="KHU VƯỜN"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#2E7D32"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_rowWeight="1"
-                android:layout_column="1"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill"
-                app:cardCornerRadius="8dp"
+                android:id="@+id/btn_house"
+                android:layout_width="0dp"
+                android:layout_height="180dp"
+                android:layout_weight="1"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="25dp"
                 app:cardElevation="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:cardUseCompatPadding="true"
-                android:id="@+id/btn_house">
+                android:foreground="?attr/selectableItemBackground">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="#E3F2FD">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:src="@drawable/home_house" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nhà" />
+                        android:layout_marginTop="12dp"
+                        android:text="VƯỜN NHÀ"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#1565C0"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-        </GridLayout>
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class LiveActivity extends AppCompatActivity {
 
-    private final int BUTTON_COUNT = 8;
+    private final int BUTTON_COUNT = 7;
     private boolean[] buttonStates = new boolean[BUTTON_COUNT];
     private boolean[] isOnArray = new boolean[BUTTON_COUNT];
 
@@ -42,6 +42,8 @@ public class LiveActivity extends AppCompatActivity {
 
     private CardView[] cards = new CardView[BUTTON_COUNT];
     private TextView[] textViews = new TextView[BUTTON_COUNT];
+    private TextView tvMotorStatus;
+    private CardView cardMotorStatus;
     private boolean isWatering = false;
     private long startMillis = 0;
     @Override
@@ -55,8 +57,36 @@ public class LiveActivity extends AppCompatActivity {
         gridButtons = findViewById(R.id.gridButtons);
         btnStartWatering = findViewById(R.id.btnStartWatering);
         btn_Back = findViewById(R.id.btn_Back);
+        tvMotorStatus = findViewById(R.id.tvMotorStatus);
+        cardMotorStatus = findViewById(R.id.cardMotorStatus);
 
         btn_Back.setOnClickListener(view -> finish());
+
+        // Lắng nghe trạng thái tưới (motor) từ Firebase
+        database.getReference("irrigation/start").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean start = snapshot.getValue(Boolean.class);
+                if (start != null && start) {
+                    isWatering = true;
+                    tvMotorStatus.setText("Máy bơm: Đang hoạt động");
+                    cardMotorStatus.setCardBackgroundColor(Color.parseColor("#E8F5E9")); // Light green
+                    btnStartWatering.setText("DỪNG TƯỚI");
+                    btnStartWatering.setBackgroundTintList(ContextCompat.getColorStateList(LiveActivity.this, android.R.color.holo_red_dark));
+                    btnStartWatering.setTextColor(Color.WHITE);
+                } else {
+                    isWatering = false;
+                    tvMotorStatus.setText("Máy bơm: Đang dừng");
+                    cardMotorStatus.setCardBackgroundColor(Color.WHITE);
+                    btnStartWatering.setText("BẮT ĐẦU TƯỚI");
+                    // Kiểm tra xem có van nào đang chọn không để set enable
+                    updateStartButtonState();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
@@ -64,10 +94,14 @@ public class LiveActivity extends AppCompatActivity {
         for (int i = 0; i < BUTTON_COUNT; i++) {
             View cardView = inflater.inflate(R.layout.button_card, gridButtons, false);
             CardView card = cardView.findViewById(R.id.cardButton);
-            TextView tv = cardView.findViewById(R.id.tvButton);
+            TextView tvName = cardView.findViewById(R.id.tvButton);
+            TextView tvStatus = cardView.findViewById(R.id.tvStatus);
+            
+            tvName.setText("Van " + (i + 1));
+            tvStatus.setText("Đang Tắt");
 
             cards[i] = card;
-            textViews[i] = tv;
+            textViews[i] = tvStatus; // Lưu tvStatus để cập nhật trạng thái
 
             int index = i;
             card.setOnClickListener(v -> {
@@ -157,15 +191,15 @@ public class LiveActivity extends AppCompatActivity {
         });
     }
 
-        private void updateCardUI(CardView card, TextView tv, boolean isOn, int index) {
+        private void updateCardUI(CardView card, TextView tvStatus, boolean isOn, int index) {
         if (isOn) {
-            card.setCardBackgroundColor(Color.parseColor("#A5D6A7"));
-            tv.setText("ON");
-            tv.setTextColor(Color.BLACK);
+            card.setCardBackgroundColor(Color.parseColor("#A5D6A7")); // Màu xanh lá nhẹ
+            tvStatus.setText("Đang Bật");
+            tvStatus.setTextColor(Color.parseColor("#1B5E20"));
         } else {
             card.setCardBackgroundColor(Color.WHITE);
-            tv.setText("OFF");
-            tv.setTextColor(Color.BLACK);
+            tvStatus.setText("Đang Tắt");
+            tvStatus.setTextColor(Color.parseColor("#757575"));
         }
 
         isOnArray[index] = isOn;
@@ -208,8 +242,6 @@ public class LiveActivity extends AppCompatActivity {
     }
 
     private void updateStartButtonState() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference irrigationRef = database.getReference("irrigation");
         boolean anyOn = false;
         for (boolean state : buttonStates) {
             if (state) {
@@ -217,20 +249,16 @@ public class LiveActivity extends AppCompatActivity {
                 break;
             }
         }
-        var abc = btnStartWatering.getText().toString();
-        if (!btnStartWatering.getText().toString().equals("Dừng tưới")) {
+        
+        if (!isWatering) {
+            btnStartWatering.setEnabled(anyOn);
             if (anyOn) {
-                btnStartWatering.setEnabled(true);
-                btnStartWatering.setText("Bắt đầu tưới");
+                btnStartWatering.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.holo_green_dark));
+                btnStartWatering.setTextColor(Color.WHITE);
             } else {
-                btnStartWatering.setText("Bắt đầu tưới");
-                btnStartWatering.setEnabled(false);
-                irrigationRef.child("start").setValue(false);  // <-- Thêm dòng này để tắt start nếu không có van nào bật
+                btnStartWatering.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
+                btnStartWatering.setTextColor(Color.BLACK);
             }
-//        btnStartWatering.setEnabled(anyOn);
-//        btnStartWatering.setBackgroundTintList(ContextCompat.getColorStateList(this,
-//                anyOn ? android.R.color.holo_green_dark : android.R.color.darker_gray));
-//        btnStartWatering.setTextColor(anyOn ? Color.WHITE : Color.BLACK);
         }
     }
 }

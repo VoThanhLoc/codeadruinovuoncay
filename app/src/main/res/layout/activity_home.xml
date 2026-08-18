@@ -10,27 +10,172 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/home"
+        android:background="#F5F5F5"
         android:orientation="vertical">
 
         <!-- Header -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="40dp">
+            android:layout_height="220dp"
+            android:background="@drawable/header_background">
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Vườn Cây Công Toàn"
+                android:text="Khu Vườn"
                 android:textColor="#FFFFFF"
-                android:textSize="28sp"
+                android:textSize="32sp"
                 android:textStyle="bold"
-                android:gravity="center" />
-
+                android:gravity="center"
+                android:shadowColor="#44000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="4" />
         </RelativeLayout>
+
+        <!-- Card Trạng thái thiết bị kiểu mới (Nền trắng để nổi bật trên Header xanh) -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="-40dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Phần trên: Icon + Tiêu đề + Pill Status -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_device_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/wifi"
+                        app:tint="#2E7D32" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/iv_device_icon"
+                        android:layout_marginStart="12dp"
+                        android:layout_centerVertical="true"
+                        android:text="Trạng thái ESP32"
+                        android:textColor="#333333"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <!-- Pill Status -->
+                    <LinearLayout
+                        android:id="@+id/layout_status_pill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/gradient_button_background"
+                        android:backgroundTint="#E8F5F9"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/view_status_dot"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:background="@drawable/status_dot"
+                            android:backgroundTint="#4CAF50" />
+
+                        <TextView
+                            android:id="@+id/tv_device_status_pill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="ONLINE"
+                            android:textColor="#2E7D32"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <!-- Đường kẻ ngang -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="#EEEEEE" />
+
+                <!-- Phần dưới: Hai cột thông số -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Cột 1: Tín hiệu WIFI -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tín hiệu WIFI"
+                            android:textColor="#888888"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_wifi_signal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="-45 dBm"
+                            android:textColor="#333333"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Cột 2: Cập nhật cuối -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cập nhật cuối"
+                            android:textColor="#888888"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_last_update"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Vừa xong"
+                            android:textColor="#333333"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <!-- Dashboard -->
         <GridLayout
@@ -38,150 +183,154 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:columnCount="2"
-            android:padding="8dp">
+            android:padding="4dp">
 
             <!-- Tưới trực tiếp -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_tuoilive"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="160dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
+                android:layout_margin="10dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="8dp"
-                app:cardUseCompatPadding="true">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/pngtree" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Tưới trực tiếp"
-                        android:textSize="16sp"
+                        android:layout_marginTop="12dp"
+                        android:text="Tưới Trực Tiếp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#2E7D32"
                         android:textAlignment="center"/>
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
             <!-- Hẹn giờ tưới -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_tuoitime"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="160dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
+                android:layout_margin="10dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="8dp"
-                app:cardUseCompatPadding="true">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         android:src="@drawable/calendar_icon_vector" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Hẹn giờ tưới"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
+                        android:layout_marginTop="12dp"
+                        android:text="Hẹn Giờ Tưới"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#E65100"
+                        android:textAlignment="center" />
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
             <!-- Lịch sử tưới -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_lichsu"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="160dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
+                android:layout_margin="10dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="8dp"
-                app:cardUseCompatPadding="true">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         android:src="@drawable/historical_data" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Lịch sử tưới"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
+                        android:layout_marginTop="12dp"
+                        android:text="Lịch Sử Tưới"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#1565C0"
+                        android:textAlignment="center" />
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
             <!-- Kết nối -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btn_wifi"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="160dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="8dp"
+                android:layout_margin="10dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="8dp"
-                app:cardUseCompatPadding="true">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         android:src="@drawable/wifi" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Kết nối"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
+                        android:layout_marginTop="12dp"
+                        android:text="Kết Nối Wifi"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#7B1FA2"
+                        android:textAlignment="center" />
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
         </GridLayout>

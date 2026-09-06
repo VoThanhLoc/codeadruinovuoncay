@@ -16,6 +16,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class NhaMainActivity extends AppCompatActivity {
     CardView btn_nhalive;
     CardView btn_nhatime;
@@ -25,6 +29,19 @@ public class NhaMainActivity extends AppCompatActivity {
     View viewStatusDot;
     TextView tvWifiSignal, tvLastUpdate;
     View layoutStatusPill;
+    android.widget.ImageButton btnBack;
+
+    private long lastSeenTimestamp = 0;
+    private String firebaseStatus = "";
+    private final android.os.Handler statusHandler = new android.os.Handler();
+    private final Runnable statusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateStatusUI();
+            statusHandler.postDelayed(this, 5000);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,22 +55,28 @@ public class NhaMainActivity extends AppCompatActivity {
         tvWifiSignal = findViewById(R.id.tv_wifi_signal_nha);
         tvLastUpdate = findViewById(R.id.tv_last_update_nha);
         layoutStatusPill = findViewById(R.id.layout_status_pill_nha);
+        btnBack = findViewById(R.id.btn_back_nha);
+
+        btnBack.setOnClickListener(v -> finish());
+
+        statusHandler.post(statusRunnable);
 
         // Lắng nghe trạng thái thiết bị từ Firebase
         DatabaseReference deviceRef = FirebaseDatabase.getInstance().getReference("device");
         deviceRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String status = snapshot.child("status").getValue(String.class);
-                if (status != null) {
-                    tvDeviceStatus.setText(status.toUpperCase());
-                    if (status.equalsIgnoreCase("Online")) {
-                        viewStatusDot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.GREEN));
-                        layoutStatusPill.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#0D47A1")));
-                    } else {
-                        viewStatusDot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.RED));
-                        layoutStatusPill.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#B71C1C")));
-                    }
+                firebaseStatus = snapshot.child("status").getValue(String.class);
+                Long lastSeen = snapshot.child("lastSeen").getValue(Long.class);
+                if (lastSeen != null) {
+                    lastSeenTimestamp = lastSeen;
+                }
+                
+                updateStatusUI();
+
+                Object versionObj = snapshot.child("firmwareVersion").getValue();
+                if (versionObj != null) {
+                    tvWifiSignal.setText("v" + versionObj);
                 }
             }
 
@@ -92,5 +115,42 @@ public class NhaMainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void updateStatusUI() {
+        long currentTime = System.currentTimeMillis();
+        boolean isTimeout = (currentTime - lastSeenTimestamp) > 30000;
+
+        if (isTimeout || !"Online".equalsIgnoreCase(firebaseStatus)) {
+            tvDeviceStatus.setText("OFFLINE");
+            viewStatusDot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.RED));
+            layoutStatusPill.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#B71C1C")));
+            
+            // Cập nhật Firebase nếu phát hiện timeout
+            if (isTimeout && "Online".equalsIgnoreCase(firebaseStatus)) {
+                FirebaseDatabase.getInstance().getReference("device/status").setValue("Offline");
+            }
+        } else {
+            tvDeviceStatus.setText("ONLINE");
+            viewStatusDot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.GREEN));
+            layoutStatusPill.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#0D47A1")));
+        }
+        tvDeviceStatus.setTextColor(Color.WHITE);
+        tvLastUpdate.setText(formatLastSeen(lastSeenTimestamp));
+    }
+
+    private String formatLastSeen(long timestamp) {
+        if (timestamp == 0) return "Chưa rõ";
+        long diff = System.currentTimeMillis() - timestamp;
+        if (diff < 60000) return "Vừa xong";
+        if (diff < 3600000) return (diff / 60000) + " phút trước";
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM", Locale.getDefault());
+        return sdf.format(new Date(timestamp));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        statusHandler.removeCallbacks(statusRunnable);
     }
 }

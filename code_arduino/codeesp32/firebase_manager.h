@@ -7,3 +7,6 @@ extern FirebaseData historyFbdo;
 
 void initFirebase();
 void firebaseLoop();
+
+
+void updateDevicePresence();
